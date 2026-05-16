@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
-import { useAuth } from '../context/AuthContext'
+import { useAuth, theme } from '../context/AuthContext'
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer,
   BarChart, Bar, PieChart, Pie, Cell, Legend
 } from 'recharts'
 
 function SellerAnalytics() {
-  const { user } = useAuth()
+  const { user, darkMode } = useAuth()
+  const t = darkMode ? theme.dark : theme.light
   const [orders, setOrders] = useState([])
   const [revenue, setRevenue] = useState(0)
   const [revenueData, setRevenueData] = useState([])
@@ -57,6 +58,25 @@ function SellerAnalytics() {
       { name: 'Rejected', value: statusMap.rejected, color: '#ff4d4d' }
     ])
   }, [])
+
+  const styles = {
+  page: { backgroundColor: t.bg, minHeight: '100vh' },
+  layout: { display: 'flex' },
+  sidebar: { width: '200px', backgroundColor: darkMode ? '#111' : '#fff', minHeight: 'calc(100vh - 57px)', padding: '24px 16px', display: 'flex', flexDirection: 'column', gap: '8px', borderRight: `1px solid ${t.border}` },
+  sidebarTitle: { color: t.subText, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' },
+  sideLink: { color: t.subText, fontSize: '14px', padding: '10px 12px', borderRadius: '8px', textDecoration: 'none' },
+  activeSideLink: { backgroundColor: darkMode ? '#1e1e2e' : '#f0eeff', color: t.accent },
+  content: { flex: 1, padding: '30px' },
+  heading: { color: t.text, marginBottom: '24px' },
+  stats: { display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: '32px' },
+  stat: { backgroundColor: t.cardBg, borderRadius: '12px', padding: '20px 28px', border: `1px solid ${t.border}`, textAlign: 'center', flex: 1, minWidth: '140px' },
+  statNum: { color: t.accent, fontSize: '22px', fontWeight: 'bold', margin: 0 },
+  statLabel: { color: t.subText, fontSize: '13px', margin: '4px 0 0' },
+  chartSection: { backgroundColor: t.cardBg, borderRadius: '12px', padding: '24px', border: `1px solid ${t.border}`, marginBottom: '24px', flex: 1 },
+  chartRow: { display: 'flex', gap: '24px', flexWrap: 'wrap' },
+  chartTitle: { color: t.text, marginBottom: '16px', fontSize: '15px' },
+  empty: { color: t.subText, fontSize: '13px' }
+}
 
   return (
     <div style={styles.page}>
@@ -143,23 +163,6 @@ function SellerAnalytics() {
   )
 }
 
-const styles = {
-  page: { backgroundColor: '#0f0f0f', minHeight: '100vh' },
-  layout: { display: 'flex' },
-  sidebar: { width: '200px', backgroundColor: '#111', minHeight: 'calc(100vh - 57px)', padding: '24px 16px', display: 'flex', flexDirection: 'column', gap: '8px', borderRight: '1px solid #222' },
-  sidebarTitle: { color: '#555', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' },
-  sideLink: { color: '#aaa', fontSize: '14px', padding: '10px 12px', borderRadius: '8px', textDecoration: 'none' },
-  activeSideLink: { backgroundColor: '#1e1e2e', color: '#6c63ff' },
-  content: { flex: 1, padding: '30px' },
-  heading: { color: '#fff', marginBottom: '24px' },
-  stats: { display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: '32px' },
-  stat: { backgroundColor: '#1a1a1a', borderRadius: '12px', padding: '20px 28px', border: '1px solid #2a2a2a', textAlign: 'center', flex: 1, minWidth: '140px' },
-  statNum: { color: '#6c63ff', fontSize: '22px', fontWeight: 'bold', margin: 0 },
-  statLabel: { color: '#aaa', fontSize: '13px', margin: '4px 0 0' },
-  chartSection: { backgroundColor: '#1a1a1a', borderRadius: '12px', padding: '24px', border: '1px solid #2a2a2a', marginBottom: '24px', flex: 1 },
-  chartRow: { display: 'flex', gap: '24px', flexWrap: 'wrap' },
-  chartTitle: { color: '#ccc', marginBottom: '16px', fontSize: '15px' },
-  empty: { color: '#555', fontSize: '13px' }
-}
+
 
 export default SellerAnalytics

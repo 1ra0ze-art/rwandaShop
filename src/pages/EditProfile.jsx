@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
-import { useAuth } from '../context/AuthContext'
+import { useAuth, theme } from '../context/AuthContext'
 
 function EditProfile() {
-  const { user, logout } = useAuth()
+  const { user, logout, darkMode } = useAuth()
+  const t = darkMode ? theme.dark : theme.light
   const navigate = useNavigate()
   const [name, setName] = useState(user.name)
   const [email, setEmail] = useState(user.email)
@@ -35,6 +36,17 @@ function EditProfile() {
     setTimeout(() => { logout(); navigate('/login') }, 2000)
   }
 
+  const styles = {
+  page: { backgroundColor: t.bg, minHeight: '100vh' },
+  container: { display: 'flex', justifyContent: 'center', padding: '60px 30px' },
+  box: { backgroundColor: t.cardBg, padding: '40px', borderRadius: '12px', width: '100%', maxWidth: '400px', display: 'flex', flexDirection: 'column', gap: '16px', border: `1px solid ${t.border}` },
+  title: { color: t.text, textAlign: 'center', marginBottom: '8px' },
+  input: { padding: '12px', borderRadius: '8px', border: `1px solid ${t.border}`, backgroundColor: t.inputBg, color: t.text, fontSize: '14px' },
+  btn: { padding: '12px', borderRadius: '8px', backgroundColor: t.accent, color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 'bold', fontSize: '15px' },
+  error: { color: '#ff4d4d', fontSize: '13px', textAlign: 'center' },
+  success: { color: '#4caf50', fontSize: '13px', textAlign: 'center' }
+}
+
   return (
     <div style={styles.page}>
       <Navbar />
@@ -54,15 +66,6 @@ function EditProfile() {
   )
 }
 
-const styles = {
-  page: { backgroundColor: '#0f0f0f', minHeight: '100vh' },
-  container: { display: 'flex', justifyContent: 'center', padding: '60px 30px' },
-  box: { backgroundColor: '#1a1a1a', padding: '40px', borderRadius: '12px', width: '100%', maxWidth: '400px', display: 'flex', flexDirection: 'column', gap: '16px', border: '1px solid #2a2a2a' },
-  title: { color: '#fff', textAlign: 'center', marginBottom: '8px' },
-  input: { padding: '12px', borderRadius: '8px', border: '1px solid #333', backgroundColor: '#2a2a2a', color: '#fff', fontSize: '14px' },
-  btn: { padding: '12px', borderRadius: '8px', backgroundColor: '#6c63ff', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 'bold', fontSize: '15px' },
-  error: { color: '#ff4d4d', fontSize: '13px', textAlign: 'center' },
-  success: { color: '#4caf50', fontSize: '13px', textAlign: 'center' }
-}
+
 
 export default EditProfile

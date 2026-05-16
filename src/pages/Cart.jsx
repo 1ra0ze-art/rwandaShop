@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
-import { useAuth } from '../context/AuthContext'
+import { useAuth, theme } from '../context/AuthContext'
 
 function Cart() {
-  const { user } = useAuth()
+  const { user, darkMode } = useAuth()
+const t = darkMode ? theme.dark : theme.light
   const navigate = useNavigate()
   const [cart, setCart] = useState([])
   const [address, setAddress] = useState('')
@@ -74,6 +75,32 @@ function Cart() {
     navigate('/orders')
   }
 
+  const styles = {
+  page: { backgroundColor: t.bg, minHeight: '100vh' },
+  container: { padding: '30px' },
+  heading: { color: t.text, marginBottom: '24px' },
+  empty: { color: t.subText, textAlign: 'center', marginTop: '60px' },
+  list: { display: 'flex', flexDirection: 'column', gap: '16px', maxWidth: '700px' },
+  item: { backgroundColor: t.cardBg, borderRadius: '12px', padding: '16px', display: 'flex', alignItems: 'center', gap: '16px', border: `1px solid ${t.border}` },
+  img: { width: '70px', height: '70px', objectFit: 'cover', borderRadius: '8px' },
+  info: { flex: 1 },
+  name: { color: t.text, margin: 0, fontSize: '15px' },
+  price: { color: t.subText, fontSize: '13px', margin: '4px 0 0' },
+  controls: { display: 'flex', alignItems: 'center', gap: '10px' },
+  qtyBtn: { width: '28px', height: '28px', borderRadius: '6px', border: `1px solid ${t.border}`, backgroundColor: t.inputBg, color: t.text, cursor: 'pointer', fontSize: '16px' },
+  qty: { color: t.text, minWidth: '20px', textAlign: 'center' },
+  subtotal: { color: t.accent, fontWeight: 'bold', minWidth: '80px', textAlign: 'right' },
+  removeBtn: { backgroundColor: 'transparent', border: 'none', color: '#ff4d4d', cursor: 'pointer', fontSize: '16px' },
+  footer: { marginTop: '30px', maxWidth: '700px' },
+  addressSection: { backgroundColor: t.cardBg, borderRadius: '12px', padding: '20px', border: `1px solid ${t.border}`, display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '20px' },
+  addressLabel: { color: t.accent, fontWeight: 'bold', fontSize: '14px' },
+  addressInput: { padding: '12px', borderRadius: '8px', border: `1px solid ${t.border}`, backgroundColor: t.inputBg, color: t.text, fontSize: '14px' },
+  footerBottom: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '700px' },
+  total: { color: t.text, fontSize: '16px' },
+  totalAmount: { color: t.accent, fontWeight: 'bold', fontSize: '20px' },
+  orderBtn: { padding: '12px 28px', borderRadius: '8px', backgroundColor: t.accent, color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 'bold', fontSize: '15px' }
+}
+
   return (
     <div style={styles.page}>
       <Navbar />
@@ -129,30 +156,6 @@ function Cart() {
   )
 }
 
-const styles = {
-  page: { backgroundColor: '#0f0f0f', minHeight: '100vh' },
-  container: { padding: '30px' },
-  heading: { color: '#fff', marginBottom: '24px' },
-  empty: { color: '#aaa', textAlign: 'center', marginTop: '60px' },
-  list: { display: 'flex', flexDirection: 'column', gap: '16px', maxWidth: '700px' },
-  item: { backgroundColor: '#1a1a1a', borderRadius: '12px', padding: '16px', display: 'flex', alignItems: 'center', gap: '16px', border: '1px solid #2a2a2a' },
-  img: { width: '70px', height: '70px', objectFit: 'cover', borderRadius: '8px' },
-  info: { flex: 1 },
-  name: { color: '#fff', margin: 0, fontSize: '15px' },
-  price: { color: '#aaa', fontSize: '13px', margin: '4px 0 0' },
-  controls: { display: 'flex', alignItems: 'center', gap: '10px' },
-  qtyBtn: { width: '28px', height: '28px', borderRadius: '6px', border: '1px solid #444', backgroundColor: '#2a2a2a', color: '#fff', cursor: 'pointer', fontSize: '16px' },
-  qty: { color: '#fff', minWidth: '20px', textAlign: 'center' },
-  subtotal: { color: '#6c63ff', fontWeight: 'bold', minWidth: '80px', textAlign: 'right' },
-  removeBtn: { backgroundColor: 'transparent', border: 'none', color: '#ff4d4d', cursor: 'pointer', fontSize: '16px' },
-  footer: { marginTop: '30px', maxWidth: '700px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  total: { color: '#ccc', fontSize: '16px' },
-  totalAmount: { color: '#6c63ff', fontWeight: 'bold', fontSize: '20px' },
-  orderBtn: { padding: '12px 28px', borderRadius: '8px', backgroundColor: '#6c63ff', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 'bold', fontSize: '15px' },
-  addressSection: { backgroundColor: '#1a1a1a', borderRadius: '12px', padding: '20px', border: '1px solid #2a2a2a', display: 'flex', flexDirection: 'column', gap: '12px', maxWidth: '700px', marginBottom: '20px' },
-  addressLabel: { color: '#6c63ff', fontWeight: 'bold', fontSize: '14px' },
-  addressInput: { padding: '12px', borderRadius: '8px', border: '1px solid #333', backgroundColor: '#2a2a2a', color: '#fff', fontSize: '14px' },
-  footerBottom: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '700px' }
-}
+
 
 export default Cart

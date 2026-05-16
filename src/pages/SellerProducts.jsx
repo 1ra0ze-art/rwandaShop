@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
+import { useAuth, theme } from '../context/AuthContext'
 import Navbar from '../components/Navbar'
 
 function SellerProducts() {
-  const { user } = useAuth()
+  const { user, darkMode } = useAuth()
+const t = darkMode ? theme.dark : theme.light
   const [products, setProducts] = useState([])
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
@@ -81,6 +82,35 @@ function SellerProducts() {
     setTimeout(() => setPaymentSuccess(''), 3000)
   }
 
+  const styles = {
+  page: { backgroundColor: t.bg, minHeight: '100vh' },
+  layout: { display: 'flex' },
+  sidebar: { width: '200px', backgroundColor: darkMode ? '#111' : '#fff', minHeight: 'calc(100vh - 57px)', padding: '24px 16px', display: 'flex', flexDirection: 'column', gap: '8px', borderRight: `1px solid ${t.border}` },
+  sidebarTitle: { color: t.subText, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' },
+  sideLink: { color: t.subText, fontSize: '14px', padding: '10px 12px', borderRadius: '8px', textDecoration: 'none' },
+  activeSideLink: { backgroundColor: darkMode ? '#1e1e2e' : '#f0eeff', color: t.accent },
+  content: { flex: 1, padding: '30px' },
+  heading: { color: t.text, marginBottom: '24px' },
+  subheading: { color: t.text, marginBottom: '16px' },
+  form: { backgroundColor: t.cardBg, padding: '24px', borderRadius: '12px', display: 'flex', flexDirection: 'column', gap: '12px', maxWidth: '500px', marginBottom: '32px', border: `1px solid ${t.border}` },
+  input: { padding: '12px', borderRadius: '8px', border: `1px solid ${t.border}`, backgroundColor: t.inputBg, color: t.text, fontSize: '14px', resize: 'vertical' },
+  label: { color: t.subText, fontSize: '13px' },
+  fileInput: { color: t.subText, fontSize: '13px' },
+  preview: { width: '100%', height: '160px', objectFit: 'cover', borderRadius: '8px' },
+  btn: { padding: '12px', borderRadius: '8px', backgroundColor: t.accent, color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 'bold' },
+  error: { color: '#ff4d4d', fontSize: '13px' },
+  success: { color: '#4caf50', fontSize: '13px' },
+  empty: { color: t.subText },
+  grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '20px' },
+  card: { backgroundColor: t.cardBg, borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '10px', border: `1px solid ${t.border}` },
+  img: { width: '100%', height: '160px', objectFit: 'cover', borderRadius: '8px' },
+  name: { color: t.text, margin: 0 },
+  desc: { color: t.subText, fontSize: '13px', margin: 0 },
+  price: { color: t.accent, fontWeight: 'bold', margin: 0 },
+  editBtn: { padding: '8px', borderRadius: '8px', backgroundColor: 'transparent', border: `1px solid ${t.accent}`, color: t.accent, cursor: 'pointer' },
+  deleteBtn: { padding: '8px', borderRadius: '8px', backgroundColor: 'transparent', border: '1px solid #ff4d4d', color: '#ff4d4d', cursor: 'pointer' }
+}
+
   return (
     <div style={styles.page}>
       <Navbar />
@@ -148,33 +178,6 @@ function SellerProducts() {
   )
 }
 
-const styles = {
-  page: { backgroundColor: '#0f0f0f', minHeight: '100vh' },
-  layout: { display: 'flex' },
-  sidebar: { width: '200px', backgroundColor: '#111', minHeight: 'calc(100vh - 57px)', padding: '24px 16px', display: 'flex', flexDirection: 'column', gap: '8px', borderRight: '1px solid #222' },
-  sidebarTitle: { color: '#555', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' },
-  sideLink: { color: '#aaa', fontSize: '14px', padding: '10px 12px', borderRadius: '8px', textDecoration: 'none' },
-  activeSideLink: { backgroundColor: '#1e1e2e', color: '#6c63ff' },
-  content: { flex: 1, padding: '30px' },
-  heading: { color: '#fff', marginBottom: '24px' },
-  subheading: { color: '#ccc', marginBottom: '16px' },
-  form: { backgroundColor: '#1a1a1a', padding: '24px', borderRadius: '12px', display: 'flex', flexDirection: 'column', gap: '12px', maxWidth: '500px', marginBottom: '32px', border: '1px solid #2a2a2a' },
-  input: { padding: '12px', borderRadius: '8px', border: '1px solid #333', backgroundColor: '#2a2a2a', color: '#fff', fontSize: '14px', resize: 'vertical' },
-  label: { color: '#aaa', fontSize: '13px' },
-  fileInput: { color: '#aaa', fontSize: '13px' },
-  preview: { width: '100%', height: '160px', objectFit: 'cover', borderRadius: '8px' },
-  btn: { padding: '12px', borderRadius: '8px', backgroundColor: '#6c63ff', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 'bold' },
-  error: { color: '#ff4d4d', fontSize: '13px' },
-  success: { color: '#4caf50', fontSize: '13px' },
-  empty: { color: '#aaa' },
-  grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '20px' },
-  card: { backgroundColor: '#1a1a1a', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '10px', border: '1px solid #2a2a2a' },
-  img: { width: '100%', height: '160px', objectFit: 'cover', borderRadius: '8px' },
-  name: { color: '#fff', margin: 0 },
-  desc: { color: '#aaa', fontSize: '13px', margin: 0 },
-  price: { color: '#6c63ff', fontWeight: 'bold', margin: 0 },
-  editBtn: { padding: '8px', borderRadius: '8px', backgroundColor: 'transparent', border: '1px solid #6c63ff', color: '#6c63ff', cursor: 'pointer' },
-  deleteBtn: { padding: '8px', borderRadius: '8px', backgroundColor: 'transparent', border: '1px solid #ff4d4d', color: '#ff4d4d', cursor: 'pointer' }
-}
+
 
 export default SellerProducts

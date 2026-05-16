@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
-import { useAuth } from '../context/AuthContext'
+import { useAuth, theme } from '../context/AuthContext'
 
 function Chat() {
-  const { user } = useAuth()
+  const { user, darkMode } = useAuth()
+  const t = darkMode ? theme.dark : theme.light
   const { sellerId } = useParams()
   const [messages, setMessages] = useState([])
   const [text, setText] = useState('')
@@ -38,6 +39,23 @@ function Chat() {
     localStorage.setItem(chatKey, JSON.stringify(updated))
     setText('')
   }
+
+  const styles = {
+  page: { backgroundColor: t.bg, minHeight: '100vh' },
+  container: { maxWidth: '700px', margin: '0 auto', padding: '30px', display: 'flex', flexDirection: 'column', height: 'calc(100vh - 57px)' },
+  header: { marginBottom: '16px' },
+  heading: { color: t.text },
+  chatBox: { flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '12px', backgroundColor: t.cardBg, borderRadius: '12px', padding: '20px', border: `1px solid ${t.border}`, marginBottom: '16px' },
+  empty: { color: t.subText, textAlign: 'center', marginTop: '40px' },
+  bubble: { maxWidth: '70%', padding: '10px 14px', borderRadius: '12px', display: 'flex', flexDirection: 'column', gap: '4px' },
+  myBubble: { alignSelf: 'flex-end', backgroundColor: t.accent },
+  theirBubble: { alignSelf: 'flex-start', backgroundColor: darkMode ? '#2a2a2a' : '#f0f0f0', border: `1px solid ${t.border}` },
+  msgText: { color: t.text, fontSize: '14px', margin: 0 },
+  msgTime: { color: t.subText, fontSize: '11px', margin: 0 },
+  inputRow: { display: 'flex', gap: '10px' },
+  input: { flex: 1, padding: '12px 16px', borderRadius: '8px', border: `1px solid ${t.border}`, backgroundColor: t.cardBg, color: t.text, fontSize: '14px' },
+  sendBtn: { padding: '12px 24px', borderRadius: '8px', backgroundColor: t.accent, color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 'bold' }
+}
 
   return (
     <div style={styles.page}>
@@ -74,21 +92,6 @@ function Chat() {
   )
 }
 
-const styles = {
-  page: { backgroundColor: '#0f0f0f', minHeight: '100vh' },
-  container: { maxWidth: '700px', margin: '0 auto', padding: '30px', display: 'flex', flexDirection: 'column', height: 'calc(100vh - 57px)' },
-  header: { marginBottom: '16px' },
-  heading: { color: '#fff' },
-  chatBox: { flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '12px', backgroundColor: '#1a1a1a', borderRadius: '12px', padding: '20px', border: '1px solid #2a2a2a', marginBottom: '16px' },
-  empty: { color: '#555', textAlign: 'center', marginTop: '40px' },
-  bubble: { maxWidth: '70%', padding: '10px 14px', borderRadius: '12px', display: 'flex', flexDirection: 'column', gap: '4px' },
-  myBubble: { alignSelf: 'flex-end', backgroundColor: '#6c63ff' },
-  theirBubble: { alignSelf: 'flex-start', backgroundColor: '#2a2a2a' },
-  msgText: { color: '#fff', fontSize: '14px', margin: 0 },
-  msgTime: { color: 'rgba(255,255,255,0.5)', fontSize: '11px', margin: 0 },
-  inputRow: { display: 'flex', gap: '10px' },
-  input: { flex: 1, padding: '12px 16px', borderRadius: '8px', border: '1px solid #333', backgroundColor: '#1a1a1a', color: '#fff', fontSize: '14px' },
-  sendBtn: { padding: '12px 24px', borderRadius: '8px', backgroundColor: '#6c63ff', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 'bold' }
-}
+
 
 export default Chat

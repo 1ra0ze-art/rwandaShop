@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
-import { useAuth } from '../context/AuthContext'
+import { useAuth, theme } from '../context/AuthContext'
 
 function SellerDashboard() {
-  const { user } = useAuth()
+  const { user, darkMode } = useAuth()
+const t = darkMode ? theme.dark : theme.light
   const [sellerOrders, setSellerOrders] = useState([])
   const [chats, setChats] = useState([])
 
@@ -54,6 +55,38 @@ function SellerDashboard() {
     localStorage.setItem('orders', JSON.stringify(updated))
     setSellerOrders(updated.filter(o => o.items.some(item => item.sellerId === user.id)))
   }
+
+  const styles = {
+  page: { backgroundColor: t.bg, minHeight: '100vh' },
+  layout: { display: 'flex' },
+  sidebar: { width: '200px', backgroundColor: darkMode ? '#111' : '#fff', minHeight: 'calc(100vh - 57px)', padding: '24px 16px', display: 'flex', flexDirection: 'column', gap: '8px', borderRight: `1px solid ${t.border}` },
+  sidebarTitle: { color: t.subText, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' },
+  sideLink: { color: t.subText, fontSize: '14px', padding: '10px 12px', borderRadius: '8px', textDecoration: 'none' },
+  activeSideLink: { backgroundColor: darkMode ? '#1e1e2e' : '#f0eeff', color: t.accent },
+  content: { flex: 1, padding: '30px' },
+  heading: { color: t.text, marginBottom: '24px' },
+  empty: { color: t.subText, textAlign: 'center', marginTop: '60px' },
+  list: { display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '750px' },
+  card: { backgroundColor: t.cardBg, borderRadius: '12px', padding: '20px', border: `1px solid ${t.border}`, display: 'flex', flexDirection: 'column', gap: '10px' },
+  cardHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
+  orderId: { color: t.text, fontWeight: 'bold', fontSize: '15px' },
+  status: { fontWeight: 'bold', fontSize: '13px' },
+  customer: { color: t.text, fontSize: '14px', margin: 0 },
+  address: { color: t.subText, fontSize: '13px', margin: 0 },
+  date: { color: t.subText, fontSize: '13px', margin: 0 },
+  items: { borderTop: `1px solid ${t.border}`, paddingTop: '10px', display: 'flex', flexDirection: 'column', gap: '6px' },
+  item: { display: 'flex', justifyContent: 'space-between' },
+  itemName: { color: t.text, fontSize: '14px' },
+  itemQty: { color: t.subText, fontSize: '13px' },
+  itemPrice: { color: t.accent, fontSize: '14px' },
+  payment: { color: t.subText, fontSize: '13px', margin: 0 },
+  proofLabel: { color: t.subText, fontSize: '13px', marginBottom: '6px' },
+  proofImg: { width: '100%', maxWidth: '300px', borderRadius: '8px', border: `1px solid ${t.border}` },
+  cardPaid: { color: '#4caf50', fontSize: '13px' },
+  actions: { display: 'flex', alignItems: 'center', gap: '10px', borderTop: `1px solid ${t.border}`, paddingTop: '10px' },
+  actionLabel: { color: t.subText, fontSize: '13px' },
+  select: { padding: '6px 10px', borderRadius: '6px', border: `1px solid ${t.border}`, backgroundColor: t.inputBg, color: t.text, fontSize: '13px' }
+}
 
   return (
     <div style={styles.page}>
@@ -124,36 +157,6 @@ function SellerDashboard() {
   )
 }
 
-const styles = {
-  page: { backgroundColor: '#0f0f0f', minHeight: '100vh' },
-  layout: { display: 'flex' },
-  sidebar: { width: '200px', backgroundColor: '#111', minHeight: 'calc(100vh - 57px)', padding: '24px 16px', display: 'flex', flexDirection: 'column', gap: '8px', borderRight: '1px solid #222' },
-  sidebarTitle: { color: '#555', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' },
-  sideLink: { color: '#aaa', fontSize: '14px', padding: '10px 12px', borderRadius: '8px', textDecoration: 'none' },
-  activeSideLink: { backgroundColor: '#1e1e2e', color: '#6c63ff' },
-  content: { flex: 1, padding: '30px' },
-  heading: { color: '#fff', marginBottom: '24px' },
-  empty: { color: '#aaa', textAlign: 'center', marginTop: '60px' },
-  list: { display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '750px' },
-  card: { backgroundColor: '#1a1a1a', borderRadius: '12px', padding: '20px', border: '1px solid #2a2a2a', display: 'flex', flexDirection: 'column', gap: '10px' },
-  cardHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  orderId: { color: '#fff', fontWeight: 'bold', fontSize: '15px' },
-  status: { fontWeight: 'bold', fontSize: '13px' },
-  customer: { color: '#ccc', fontSize: '14px', margin: 0 },
-  address: { color: '#aaa', fontSize: '13px', margin: 0 },
-  date: { color: '#aaa', fontSize: '13px', margin: 0 },
-  items: { borderTop: '1px solid #2a2a2a', paddingTop: '10px', display: 'flex', flexDirection: 'column', gap: '6px' },
-  item: { display: 'flex', justifyContent: 'space-between' },
-  itemName: { color: '#ccc', fontSize: '14px' },
-  itemQty: { color: '#aaa', fontSize: '13px' },
-  itemPrice: { color: '#6c63ff', fontSize: '14px' },
-  payment: { color: '#aaa', fontSize: '13px', margin: 0 },
-  proofLabel: { color: '#aaa', fontSize: '13px', marginBottom: '6px' },
-  proofImg: { width: '100%', maxWidth: '300px', borderRadius: '8px', border: '1px solid #333' },
-  cardPaid: { color: '#4caf50', fontSize: '13px' },
-  actions: { display: 'flex', alignItems: 'center', gap: '10px', borderTop: '1px solid #2a2a2a', paddingTop: '10px' },
-  actionLabel: { color: '#aaa', fontSize: '13px' },
-  select: { padding: '6px 10px', borderRadius: '6px', border: '1px solid #333', backgroundColor: '#2a2a2a', color: '#fff', fontSize: '13px' }
-}
+
 
 export default SellerDashboard

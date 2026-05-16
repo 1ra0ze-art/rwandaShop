@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
-import { useAuth } from '../context/AuthContext'
+import { useAuth, theme } from '../context/AuthContext'
 
 function SellerChats() {
-  const { user } = useAuth()
+  const { user, darkMode } = useAuth()
+  const t = darkMode ? theme.dark : theme.light
   const [chats, setChats] = useState([])
   const [activeChat, setActiveChat] = useState(null)
   const [messages, setMessages] = useState([])
@@ -46,6 +47,36 @@ function SellerChats() {
     setChats(prev => prev.map(c => c.chatKey === activeChat.chatKey ? { ...c, msgs: updated, lastMsg: newMsg } : c))
     setText('')
   }
+
+  const styles = {
+  page: { backgroundColor: t.bg, minHeight: '100vh' },
+  layout: { display: 'flex' },
+  sidebar: { width: '200px', backgroundColor: darkMode ? '#111' : '#fff', minHeight: 'calc(100vh - 57px)', padding: '24px 16px', display: 'flex', flexDirection: 'column', gap: '8px', borderRight: `1px solid ${t.border}` },
+  sidebarTitle: { color: t.subText, fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' },
+  sideLink: { color: t.subText, fontSize: '14px', padding: '10px 12px', borderRadius: '8px', textDecoration: 'none' },
+  activeSideLink: { backgroundColor: darkMode ? '#1e1e2e' : '#f0eeff', color: t.accent },
+  chatLayout: { flex: 1, display: 'flex' },
+  chatList: { width: '280px', borderRight: `1px solid ${t.border}`, padding: '20px', display: 'flex', flexDirection: 'column', gap: '8px' },
+  heading: { color: t.text, marginBottom: '16px' },
+  empty: { color: t.subText, fontSize: '13px' },
+  chatItem: { padding: '12px', borderRadius: '8px', cursor: 'pointer', border: `1px solid ${t.border}`, backgroundColor: t.cardBg },
+  activeChatItem: { border: `1px solid ${t.accent}`, backgroundColor: darkMode ? '#1e1e2e' : '#f0eeff' },
+  customerName: { color: t.text, fontSize: '14px', fontWeight: 'bold', margin: 0 },
+  lastMsg: { color: t.subText, fontSize: '12px', margin: '4px 0 0' },
+  chatBox: { flex: 1, display: 'flex', flexDirection: 'column', padding: '20px' },
+  selectChat: { color: t.subText, textAlign: 'center', marginTop: '40%' },
+  chatHeader: { borderBottom: `1px solid ${t.border}`, paddingBottom: '12px', marginBottom: '16px' },
+  chatWith: { color: t.text, fontWeight: 'bold', margin: 0 },
+  messages: { flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '16px', maxHeight: 'calc(100vh - 250px)' },
+  bubble: { maxWidth: '70%', padding: '10px 14px', borderRadius: '12px', display: 'flex', flexDirection: 'column', gap: '4px' },
+  myBubble: { alignSelf: 'flex-end', backgroundColor: t.accent },
+  theirBubble: { alignSelf: 'flex-start', backgroundColor: t.cardBg, border: `1px solid ${t.border}` },
+  msgText: { color: '#fff', fontSize: '14px', margin: 0 },
+  msgTime: { color: 'rgba(255,255,255,0.5)', fontSize: '11px', margin: 0 },
+  inputRow: { display: 'flex', gap: '10px' },
+  input: { flex: 1, padding: '12px 16px', borderRadius: '8px', border: `1px solid ${t.border}`, backgroundColor: t.cardBg, color: t.text, fontSize: '14px' },
+  sendBtn: { padding: '12px 24px', borderRadius: '8px', backgroundColor: t.accent, color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 'bold' }
+}
 
   return (
     <div style={styles.page}>
@@ -111,34 +142,6 @@ function SellerChats() {
   )
 }
 
-const styles = {
-  page: { backgroundColor: '#0f0f0f', minHeight: '100vh' },
-  layout: { display: 'flex' },
-  sidebar: { width: '200px', backgroundColor: '#111', minHeight: 'calc(100vh - 57px)', padding: '24px 16px', display: 'flex', flexDirection: 'column', gap: '8px', borderRight: '1px solid #222' },
-  sidebarTitle: { color: '#555', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '8px' },
-  sideLink: { color: '#aaa', fontSize: '14px', padding: '10px 12px', borderRadius: '8px', textDecoration: 'none' },
-  activeSideLink: { backgroundColor: '#1e1e2e', color: '#6c63ff' },
-  chatLayout: { flex: 1, display: 'flex' },
-  chatList: { width: '280px', borderRight: '1px solid #222', padding: '20px', display: 'flex', flexDirection: 'column', gap: '8px' },
-  heading: { color: '#fff', marginBottom: '16px' },
-  empty: { color: '#555', fontSize: '13px' },
-  chatItem: { padding: '12px', borderRadius: '8px', cursor: 'pointer', border: '1px solid #2a2a2a', backgroundColor: '#1a1a1a' },
-  activeChatItem: { border: '1px solid #6c63ff', backgroundColor: '#1e1e2e' },
-  customerName: { color: '#fff', fontSize: '14px', fontWeight: 'bold', margin: 0 },
-  lastMsg: { color: '#aaa', fontSize: '12px', margin: '4px 0 0' },
-  chatBox: { flex: 1, display: 'flex', flexDirection: 'column', padding: '20px' },
-  selectChat: { color: '#555', textAlign: 'center', marginTop: '40%' },
-  chatHeader: { borderBottom: '1px solid #222', paddingBottom: '12px', marginBottom: '16px' },
-  chatWith: { color: '#fff', fontWeight: 'bold', margin: 0 },
-  messages: { flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '16px', maxHeight: 'calc(100vh - 250px)' },
-  bubble: { maxWidth: '70%', padding: '10px 14px', borderRadius: '12px', display: 'flex', flexDirection: 'column', gap: '4px' },
-  myBubble: { alignSelf: 'flex-end', backgroundColor: '#6c63ff' },
-  theirBubble: { alignSelf: 'flex-start', backgroundColor: '#2a2a2a' },
-  msgText: { color: '#fff', fontSize: '14px', margin: 0 },
-  msgTime: { color: 'rgba(255,255,255,0.5)', fontSize: '11px', margin: 0 },
-  inputRow: { display: 'flex', gap: '10px' },
-  input: { flex: 1, padding: '12px 16px', borderRadius: '8px', border: '1px solid #333', backgroundColor: '#1a1a1a', color: '#fff', fontSize: '14px' },
-  sendBtn: { padding: '12px 24px', borderRadius: '8px', backgroundColor: '#6c63ff', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 'bold' }
-}
+
 
 export default SellerChats

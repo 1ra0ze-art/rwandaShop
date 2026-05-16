@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import Navbar from '../components/Navbar'
-import { useAuth } from '../context/AuthContext'
+import { useAuth, theme } from '../context/AuthContext'
 
 function ReviewItem({ item, orderId, userId }) {
   const [rating, setRating] = useState(0)
@@ -57,7 +57,8 @@ const reviewStyles = {
   submitted: { color: '#4caf50', fontSize: '13px' }
 }
 function Orders() {
-  const { user } = useAuth()
+  const { user, darkMode } = useAuth()
+const t = darkMode ? theme.dark : theme.light
   const [orders, setOrders] = useState([])
   const [selectedPayMethod, setSelectedPayMethod] = useState({})
 
@@ -93,6 +94,48 @@ function Orders() {
     if (status === 'rejected') return '#ff4d4d'
     return '#f0a500'
   }
+
+  const styles = {
+  page: { backgroundColor: t.bg, minHeight: '100vh' },
+  container: { padding: '30px' },
+  heading: { color: t.text, marginBottom: '24px' },
+  empty: { color: t.subText, textAlign: 'center', marginTop: '60px' },
+  list: { display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '700px' },
+  card: { backgroundColor: t.cardBg, borderRadius: '12px', padding: '20px', border: `1px solid ${t.border}`, display: 'flex', flexDirection: 'column', gap: '10px' },
+  cardHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
+  orderId: { color: t.text, fontWeight: 'bold', fontSize: '15px' },
+  status: { fontWeight: 'bold', fontSize: '13px' },
+  date: { color: t.subText, fontSize: '13px', margin: 0 },
+  address: { color: t.subText, fontSize: '13px', margin: 0 },
+  payment: { color: t.subText, fontSize: '13px', margin: 0 },
+  proofSection: { backgroundColor: t.bg, borderRadius: '8px', padding: '12px', border: `1px solid ${t.border}` },
+  proofHint: { color: t.subText, fontSize: '13px', marginBottom: '8px' },
+  proofUploaded: { color: '#4caf50', fontSize: '13px' },
+  fileInput: { color: t.subText, fontSize: '13px' },
+  payMethods: { display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '12px' },
+  sellerName: { color: t.subText, fontSize: '12px', marginBottom: '4px' },
+  payMethodBtn: { padding: '10px 14px', borderRadius: '8px', border: `1px solid ${t.border}`, backgroundColor: t.cardBg, color: t.text, cursor: 'pointer', fontSize: '13px', textAlign: 'left' },
+  activePayMethod: { border: `1px solid ${t.accent}`, color: t.accent, backgroundColor: t.bg },
+  cardForm: { display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px' },
+  cardInput: { padding: '10px 12px', borderRadius: '8px', border: `1px solid ${t.border}`, backgroundColor: t.inputBg, color: t.text, fontSize: '14px' },
+  cardRow: { display: 'flex', gap: '10px' },
+  payBtn: { padding: '12px', borderRadius: '8px', backgroundColor: t.accent, color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 'bold', fontSize: '14px' },
+  delivery: { color: t.subText, fontSize: '13px', margin: 0 },
+  deliveryInfo: { backgroundColor: t.bg, borderRadius: '8px', padding: '12px', border: `1px solid ${t.border}` },
+  deliveryText: { color: t.text, fontSize: '13px', margin: 0 },
+  deliveryDate: { color: t.accent, fontSize: '13px', margin: '4px 0 0' },
+  items: { borderTop: `1px solid ${t.border}`, paddingTop: '10px', display: 'flex', flexDirection: 'column', gap: '6px' },
+  item: { display: 'flex', justifyContent: 'space-between' },
+  itemName: { color: t.text, fontSize: '14px' },
+  itemQty: { color: t.subText, fontSize: '13px' },
+  itemPrice: { color: t.accent, fontSize: '14px' },
+  total: { color: t.text, fontSize: '15px', borderTop: `1px solid ${t.border}`, paddingTop: '10px', margin: 0 },
+  totalAmount: { color: t.accent, fontWeight: 'bold', fontSize: '18px' },
+  reviewSection: { borderTop: `1px solid ${t.border}`, paddingTop: '10px', display: 'flex', flexDirection: 'column', gap: '10px' },
+  reviewTitle: { color: '#f0a500', fontSize: '14px', fontWeight: 'bold', margin: 0 },
+  disputeBtn: { padding: '8px 16px', borderRadius: '8px', backgroundColor: 'transparent', border: '1px solid #f0a500', color: '#f0a500', cursor: 'pointer', fontSize: '13px' },
+  disputedTag: { color: '#f0a500', fontSize: '13px', margin: 0 }
+}
 
   return (
     <div style={styles.page}>
@@ -198,6 +241,22 @@ function Orders() {
                   ))}
                 </div>
                 <p style={styles.total}>Total: <span style={styles.totalAmount}>{order.total} RWF</span></p>
+                {order.status === 'approved' && !order.disputed && (
+                  <button style={styles.disputeBtn} onClick={() => {
+                    const subject = prompt('What is the issue? (e.g. Wrong item, Not delivered)')
+                    const description = prompt('Describe the problem:')
+                    if (!subject || !description) return
+                    const disputes = JSON.parse(localStorage.getItem('disputes') || '[]')
+                    disputes.push({ id: Date.now(), orderId: order.id, userId: user.id, userName: user.name, subject, description, status: 'open', createdAt: new Date().toLocaleString() })
+                    localStorage.setItem('disputes', JSON.stringify(disputes))
+                    const all = JSON.parse(localStorage.getItem('orders') || '[]')
+                    const updated = all.map(o => o.id === order.id ? { ...o, disputed: true } : o)
+                    localStorage.setItem('orders', JSON.stringify(updated))
+                    setOrders(updated.filter(o => o.userId === user.id))
+                    alert('Dispute filed! Admin will review it.')
+                  }}>⚠️ File a Dispute</button>
+                )}
+                {order.disputed && <p style={styles.disputedTag}>⚠️ Dispute filed — under review</p>}
                 {order.deliveryStatus === 'delivered' && (
                   <div style={styles.reviewSection}>
                     <p style={styles.reviewTitle}>⭐ Rate your products</p>
@@ -215,43 +274,5 @@ function Orders() {
   )
 }
 
-const styles = {
-  page: { backgroundColor: '#0f0f0f', minHeight: '100vh' },
-  container: { padding: '30px' },
-  heading: { color: '#fff', marginBottom: '24px' },
-  empty: { color: '#aaa', textAlign: 'center', marginTop: '60px' },
-  list: { display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '700px' },
-  card: { backgroundColor: '#1a1a1a', borderRadius: '12px', padding: '20px', border: '1px solid #2a2a2a', display: 'flex', flexDirection: 'column', gap: '10px' },
-  cardHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
-  orderId: { color: '#fff', fontWeight: 'bold', fontSize: '15px' },
-  status: { fontWeight: 'bold', fontSize: '13px' },
-  date: { color: '#aaa', fontSize: '13px', margin: 0 },
-  address: { color: '#aaa', fontSize: '13px', margin: 0 },
-  payment: { color: '#aaa', fontSize: '13px', margin: 0 },
-  proofSection: { backgroundColor: '#0f0f0f', borderRadius: '8px', padding: '12px', border: '1px solid #2a2a2a' },
-  proofHint: { color: '#aaa', fontSize: '13px', marginBottom: '8px' },
-  proofUploaded: { color: '#4caf50', fontSize: '13px' },
-  fileInput: { color: '#aaa', fontSize: '13px' },
-  payMethods: { display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '12px' },
-  sellerName: { color: '#aaa', fontSize: '12px', marginBottom: '4px' },
-  payMethodBtn: { padding: '10px 14px', borderRadius: '8px', border: '1px solid #333', backgroundColor: '#1a1a1a', color: '#ccc', cursor: 'pointer', fontSize: '13px', textAlign: 'left' },
-  activePayMethod: { border: '1px solid #6c63ff', color: '#6c63ff', backgroundColor: '#1e1e2e' },
-  cardForm: { display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px' },
-  cardInput: { padding: '10px 12px', borderRadius: '8px', border: '1px solid #333', backgroundColor: '#2a2a2a', color: '#fff', fontSize: '14px' },
-  cardRow: { display: 'flex', gap: '10px' },
-  payBtn: { padding: '12px', borderRadius: '8px', backgroundColor: '#6c63ff', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 'bold', fontSize: '14px' },
-  delivery: { color: '#aaa', fontSize: '13px', margin: 0 },
-  deliveryInfo: { backgroundColor: '#0f0f0f', borderRadius: '8px', padding: '12px', border: '1px solid #2a2a2a' },
-  deliveryText: { color: '#ccc', fontSize: '13px', margin: 0 },
-  deliveryDate: { color: '#6c63ff', fontSize: '13px', margin: '4px 0 0' },
-  items: { borderTop: '1px solid #2a2a2a', paddingTop: '10px', display: 'flex', flexDirection: 'column', gap: '6px' },
-  item: { display: 'flex', justifyContent: 'space-between' },
-  itemName: { color: '#ccc', fontSize: '14px' },
-  itemQty: { color: '#aaa', fontSize: '13px' },
-  itemPrice: { color: '#6c63ff', fontSize: '14px' },
-  total: { color: '#ccc', fontSize: '15px', borderTop: '1px solid #2a2a2a', paddingTop: '10px', margin: 0 },
-  totalAmount: { color: '#6c63ff', fontWeight: 'bold', fontSize: '18px' },
-  reviewSection: { borderTop: '1px solid #2a2a2a', paddingTop: '10px', display: 'flex', flexDirection: 'column', gap: '10px' },
-  reviewTitle: { color: '#f0a500', fontSize: '14px', fontWeight: 'bold', margin: 0 }
-}
+
 export default Orders

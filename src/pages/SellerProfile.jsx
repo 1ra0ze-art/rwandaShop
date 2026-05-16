@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
-import { useAuth } from '../context/AuthContext'
+import { useAuth, theme } from '../context/AuthContext'
 
 function SellerProfile() {
   const { sellerId } = useParams()
-  const { user } = useAuth()
+  const { user, darkMode } = useAuth()
+  const t = darkMode ? theme.dark : theme.light
   const navigate = useNavigate()
   const [seller, setSeller] = useState(null)
   const [products, setProducts] = useState([])
@@ -45,6 +46,37 @@ function SellerProfile() {
     localStorage.setItem('cart', JSON.stringify(cart))
     alert('Added to cart!')
   }
+
+  const styles = {
+  page: { backgroundColor: t.bg, minHeight: '100vh' },
+  container: { padding: '30px', maxWidth: '1000px', margin: '0 auto' },
+  profileCard: { backgroundColor: t.cardBg, borderRadius: '12px', padding: '24px', border: `1px solid ${t.border}`, display: 'flex', alignItems: 'center', gap: '24px', marginBottom: '32px', flexWrap: 'wrap' },
+  avatar: { fontSize: '48px', backgroundColor: t.inputBg, borderRadius: '50%', width: '80px', height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+  sellerName: { color: t.text, margin: 0, fontSize: '22px' },
+  sellerEmail: { color: t.subText, fontSize: '13px', margin: '4px 0' },
+  rating: { color: '#f0a500', fontSize: '14px', margin: '4px 0' },
+  productCount: { color: t.accent, fontSize: '13px', margin: '4px 0' },
+  chatBtn: { marginLeft: 'auto', padding: '10px 20px', borderRadius: '8px', backgroundColor: 'transparent', border: `1px solid ${t.accent}`, color: t.accent, cursor: 'pointer', fontWeight: 'bold' },
+  subheading: { color: t.text, marginBottom: '16px', fontSize: '16px' },
+  empty: { color: t.subText },
+  grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '20px', marginBottom: '32px' },
+  card: { backgroundColor: t.cardBg, borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '8px', border: `1px solid ${t.border}` },
+  img: { width: '100%', height: '160px', objectFit: 'cover', borderRadius: '8px' },
+  cardRating: { color: '#f0a500', fontSize: '13px', margin: 0 },
+  name: { color: t.text, margin: 0 },
+  desc: { color: t.subText, fontSize: '13px', margin: 0 },
+  price: { color: t.accent, fontWeight: 'bold', margin: 0 },
+  stock: { fontSize: '12px', fontWeight: 'bold', margin: 0 },
+  btn: { padding: '10px', borderRadius: '8px', backgroundColor: t.accent, color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 'bold' },
+  disabledBtn: { backgroundColor: t.border, color: t.subText, cursor: 'not-allowed' },
+  reviewList: { display: 'flex', flexDirection: 'column', gap: '12px', maxWidth: '700px' },
+  reviewCard: { backgroundColor: t.cardBg, borderRadius: '10px', padding: '16px', border: `1px solid ${t.border}`, display: 'flex', flexDirection: 'column', gap: '6px' },
+  reviewHeader: { display: 'flex', justifyContent: 'space-between' },
+  reviewProduct: { color: t.text, fontSize: '14px', fontWeight: 'bold' },
+  reviewRating: { color: '#f0a500', fontSize: '14px' },
+  reviewComment: { color: t.subText, fontSize: '13px', margin: 0 },
+  reviewDate: { color: t.subText, fontSize: '12px', margin: 0 }
+}
 
   return (
     <div style={styles.page}>
@@ -114,35 +146,6 @@ function SellerProfile() {
   )
 }
 
-const styles = {
-  page: { backgroundColor: '#0f0f0f', minHeight: '100vh' },
-  container: { padding: '30px', maxWidth: '1000px', margin: '0 auto' },
-  profileCard: { backgroundColor: '#1a1a1a', borderRadius: '12px', padding: '24px', border: '1px solid #2a2a2a', display: 'flex', alignItems: 'center', gap: '24px', marginBottom: '32px', flexWrap: 'wrap' },
-  avatar: { fontSize: '48px', backgroundColor: '#2a2a2a', borderRadius: '50%', width: '80px', height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  sellerName: { color: '#fff', margin: 0, fontSize: '22px' },
-  sellerEmail: { color: '#aaa', fontSize: '13px', margin: '4px 0' },
-  rating: { color: '#f0a500', fontSize: '14px', margin: '4px 0' },
-  productCount: { color: '#6c63ff', fontSize: '13px', margin: '4px 0' },
-  chatBtn: { marginLeft: 'auto', padding: '10px 20px', borderRadius: '8px', backgroundColor: 'transparent', border: '1px solid #6c63ff', color: '#6c63ff', cursor: 'pointer', fontWeight: 'bold' },
-  subheading: { color: '#ccc', marginBottom: '16px', fontSize: '16px' },
-  empty: { color: '#aaa' },
-  grid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '20px', marginBottom: '32px' },
-  card: { backgroundColor: '#1a1a1a', borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '8px', border: '1px solid #2a2a2a' },
-  img: { width: '100%', height: '160px', objectFit: 'cover', borderRadius: '8px' },
-  cardRating: { color: '#f0a500', fontSize: '13px', margin: 0 },
-  name: { color: '#fff', margin: 0 },
-  desc: { color: '#aaa', fontSize: '13px', margin: 0 },
-  price: { color: '#6c63ff', fontWeight: 'bold', margin: 0 },
-  stock: { fontSize: '12px', fontWeight: 'bold', margin: 0 },
-  btn: { padding: '10px', borderRadius: '8px', backgroundColor: '#6c63ff', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 'bold' },
-  disabledBtn: { backgroundColor: '#333', color: '#666', cursor: 'not-allowed' },
-  reviewList: { display: 'flex', flexDirection: 'column', gap: '12px', maxWidth: '700px' },
-  reviewCard: { backgroundColor: '#1a1a1a', borderRadius: '10px', padding: '16px', border: '1px solid #2a2a2a', display: 'flex', flexDirection: 'column', gap: '6px' },
-  reviewHeader: { display: 'flex', justifyContent: 'space-between' },
-  reviewProduct: { color: '#ccc', fontSize: '14px', fontWeight: 'bold' },
-  reviewRating: { color: '#f0a500', fontSize: '14px' },
-  reviewComment: { color: '#aaa', fontSize: '13px', margin: 0 },
-  reviewDate: { color: '#555', fontSize: '12px', margin: 0 }
-}
+
 
 export default SellerProfile
