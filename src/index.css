@@ -40,3 +40,29 @@ input::placeholder, textarea::placeholder {
 ::-webkit-scrollbar-thumb:hover {
   background: #6c63ff;
 }
+@media (max-width: 768px) {
+  /* General */
+  body { font-size: 14px; }
+
+  /* Seller sidebar — hide on mobile, show as top bar */
+  .seller-layout { flex-direction: column !important; }
+  .seller-sidebar { width: 100% !important; min-height: auto !important; flex-direction: row !important; overflow-x: auto !important; padding: 10px !important; gap: 4px !important; border-right: none !important; border-bottom: 1px solid #2a2a2a !important; }
+  .seller-sidebar a { white-space: nowrap; font-size: 12px !important; padding: 8px 10px !important; }
+
+  /* Product grid */
+  .product-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; }
+
+  /* Admin stats */
+  .admin-stats { gap: 8px !important; }
+  .admin-stat { min-width: 100px !important; padding: 12px !important; }
+
+  /* Charts */
+  .chart-row { flex-direction: column !important; }
+
+  /* Cart item */
+  .cart-item { flex-wrap: wrap !important; }
+}
+
+@media (max-width: 480px) {
+  .product-grid { grid-template-columns: 1fr !important; }
+}
