@@ -31,17 +31,15 @@ export function AuthProvider({ children }) {
     return { success: true, role: found.role }
   }
 
-  const register = (name, email, password, role, paymentMethods = null) => {
+  const register = (name, email, password, role, paymentMethods = null, code = null) => {
     const users = JSON.parse(localStorage.getItem('users') || '[]')
     const exists = users.find(u => u.email === email)
     if (exists) return { success: false, message: 'Email already registered' }
-
-    const newUser = { id: Date.now(), name, email, password, role, paymentMethods }
+    const verifyCode = code || Math.floor(100000 + Math.random() * 900000).toString()
+    const newUser = { id: Date.now(), name, email, password, role, paymentMethods, verified: false, verifyCode }
     users.push(newUser)
     localStorage.setItem('users', JSON.stringify(users))
-    setUser(newUser)
-    localStorage.setItem('currentUser', JSON.stringify(newUser))
-    return { success: true, role }
+    return { success: true, role, verifyCode, userId: newUser.id }
   }
 
   const logout = () => {

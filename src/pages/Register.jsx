@@ -22,18 +22,33 @@ function Register() {
 
   useEffect(() => { document.title = 'Register — RwandaShop' }, [])
 
-  const handleResend = async () => {
-    setError('')
-    const newCode = Math.floor(100000 + Math.random() * 900000).toString()
-    const users = JSON.parse(localStorage.getItem('users') || '[]')
-    const updated = users.map(u => u.id === userId ? { ...u, verifyCode: newCode } : u)
-    localStorage.setItem('users', JSON.stringify(updated))
+  const handleRegister = async () => {
+    if (!name || !email || !password) return setError('Fill in all fields')
+    
+    // check if email already exists
+    const existingUsers = JSON.parse(localStorage.getItem('users') || '[]')
+    if (existingUsers.find(u => u.email === email)) return setError('Email already registered')
+
+    const code = Math.floor(100000 + Math.random() * 900000).toString()
+    
+    // send email first
     try {
-      await emailjs.send('service_vdhxxej', 'template_plke7jk', { to_email: email, email, passcode: newCode, time: '15 minutes' }, '7Pi3rV-nmN_Bl1jvq')
-      alert('New code sent!')
-    } catch {
-      setError('Failed to resend. Try again.')
+      await emailjs.send(
+        'service_vdhxxej',
+        'template_plke7jk',
+        { to_email: email, email, passcode: code, time: '15 minutes' },
+        '7Pi3rV-nmN_Bl1jvq'
+      )
+    } catch (err) {
+      return setError('Failed to send verification email. Try again.')
     }
+
+    // only save user if email succeeded
+    const paymentMethods = role === 'seller' ? { momoNumber, bankAccount, bankName } : null
+    const result = register(name, email, password, role, paymentMethods, code)
+    if (!result.success) return setError(result.message)
+    setUserId(result.userId)
+    setStep('verify')
   }
 
   const handleRegister = async () => {
@@ -54,6 +69,13 @@ function Register() {
     } catch (err) {
       setError('Failed to send verification email. Try again.')
     }
+  }
+
+  const handleVerify = () => {
+    const result = verifyEmail(userId, inputCode)
+    if (!result.success) return setError(result.message)
+    if (result.role === 'seller') navigate('/seller')
+    else navigate('/')
   }
 
   return (
@@ -117,12 +139,7 @@ function Register() {
             onChange={e => setInputCode(e.target.value)}
             maxLength={6}
           />
-          <button style={styles.btn} onClick={() => {
-            const result = verifyEmail(userId, inputCode)
-            if (!result.success) return setError(result.message)
-            if (result.role === 'seller') navigate('/seller')
-            else navigate('/')
-          }}>Verify & Continue</button>
+          <button style={styles.btn} onClick={handleVerify}>Verify & Continue</button>
           <p style={styles.link}>Wrong email? <span style={{ ...styles.a, cursor: 'pointer' }} onClick={() => setStep('register')}>Go back</span></p>
           <p style={styles.link}><span style={{ ...styles.a, cursor: 'pointer' }} onClick={handleResend}>Resend code</span></p>
         </>}
