@@ -46,7 +46,7 @@ function Register() {
       await emailjs.send(
         'service_vdhxxej',
         'template_i8ykovr',
-        { email, passcode: code },
+        { email, passcode: code, time: new Date(Date.now() + 15 * 60 * 1000).toLocaleString() },
         '7Pi3rV-nmN_Bl1jvq'
       )
       setVerifyCode(code)
