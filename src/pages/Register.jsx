@@ -3,6 +3,8 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import emailjs from '@emailjs/browser'
 
+const floatingIcons = ['🛒', '💳', '📦', '⭐', '🏷️', '💰', '🎁', '🔔']
+
 function Register() {
   const { register, verifyEmail } = useAuth()
   const navigate = useNavigate()
@@ -15,18 +17,17 @@ function Register() {
   const [bankName, setBankName] = useState('')
   const [error, setError] = useState('')
   const [step, setStep] = useState('register')
-  const [verifyCode, setVerifyCode] = useState('')
   const [userId, setUserId] = useState(null)
   const [inputCode, setInputCode] = useState('')
+
   useEffect(() => { document.title = 'Register — RwandaShop' }, [])
-  
+
   const handleResend = async () => {
     setError('')
     const newCode = Math.floor(100000 + Math.random() * 900000).toString()
     const users = JSON.parse(localStorage.getItem('users') || '[]')
     const updated = users.map(u => u.id === userId ? { ...u, verifyCode: newCode } : u)
     localStorage.setItem('users', JSON.stringify(updated))
-    setVerifyCode(newCode)
     try {
       await emailjs.send('service_vdhxxej', 'template_plke7jk', { to_email: email, email, passcode: newCode, time: '15 minutes' }, '7Pi3rV-nmN_Bl1jvq')
       alert('New code sent!')
@@ -40,16 +41,14 @@ function Register() {
     const paymentMethods = role === 'seller' ? { momoNumber, bankAccount, bankName } : null
     const result = register(name, email, password, role, paymentMethods)
     if (!result.success) return setError(result.message)
-
     const code = result.verifyCode
     try {
       await emailjs.send(
         'service_vdhxxej',
-        'template_i8ykovr',
+        'template_plke7jk',
         { to_email: email, email, passcode: code, time: '15 minutes' },
         '7Pi3rV-nmN_Bl1jvq'
       )
-      setVerifyCode(code)
       setUserId(result.userId)
       setStep('verify')
     } catch (err) {
@@ -58,7 +57,32 @@ function Register() {
   }
 
   return (
-   <div style={styles.card}>
+    <div style={styles.page}>
+      <style>{`
+        @keyframes float {
+          0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+        @keyframes gradientShift {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+        .floating-icon { position: absolute; animation: float linear infinite; pointer-events: none; }
+        .reg-bg { background: linear-gradient(-45deg, #0f0f1a, #1a0f2e, #0d1b2a, #1a1a0f); background-size: 400% 400%; animation: gradientShift 8s ease infinite; }
+      `}</style>
+
+      <div className="reg-bg" style={styles.bg}>
+        {floatingIcons.map((icon, i) => (
+          <span key={i} className="floating-icon" style={{ left: `${(i * 12) + 4}%`, animationDuration: `${6 + i * 1.5}s`, animationDelay: `${i * 0.8}s`, fontSize: `${20 + (i % 3) * 10}px` }}>
+            {icon}
+          </span>
+        ))}
+      </div>
+
+      <div style={styles.card}>
         <div style={styles.logoRow}>
           <span style={styles.logoIcon}>🛒</span>
           <span style={styles.logoText}>RwandaShop</span>
@@ -103,6 +127,7 @@ function Register() {
           <p style={styles.link}><span style={{ ...styles.a, cursor: 'pointer' }} onClick={handleResend}>Resend code</span></p>
         </>}
       </div>
+    </div>
   )
 }
 
@@ -120,7 +145,7 @@ const styles = {
   link: { color: '#aaa', textAlign: 'center', fontSize: '13px', margin: 0 },
   a: { color: '#6c63ff' },
   sectionLabel: { color: '#6c63ff', fontSize: '13px', fontWeight: 'bold', margin: 0 },
-  subtitle: { color: '#aaa', textAlign: 'center', fontSize: '13px', margin: 0 },
+  subtitle: { color: '#aaa', textAlign: 'center', fontSize: '13px', margin: 0 }
 }
 
 export default Register
