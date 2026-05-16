@@ -28,7 +28,7 @@ function Register() {
     localStorage.setItem('users', JSON.stringify(updated))
     setVerifyCode(newCode)
     try {
-      await emailjs.send('service_vdhxxej', 'template_plke7jk', { email, passcode: newCode }, '7Pi3rV-nmN_Bl1jvq')
+      await emailjs.send('service_vdhxxej', 'template_plke7jk', { to_email: email, email, passcode: newCode, time: '15 minutes' }, '7Pi3rV-nmN_Bl1jvq')
       alert('New code sent!')
     } catch {
       setError('Failed to resend. Try again.')
@@ -46,7 +46,7 @@ function Register() {
       await emailjs.send(
         'service_vdhxxej',
         'template_i8ykovr',
-        { email, passcode: code, time: new Date(Date.now() + 15 * 60 * 1000).toLocaleString() },
+        { to_email: email, email, passcode: code, time: '15 minutes' },
         '7Pi3rV-nmN_Bl1jvq'
       )
       setVerifyCode(code)
